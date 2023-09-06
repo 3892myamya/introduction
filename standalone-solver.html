@@ -1,0 +1,363 @@
+<html>
+
+<head>
+  <script>
+    // Copyright (c) 2023 @3892myamya, Released under the MIT license. https://opensource.org/license/mit/
+
+    let cnt = 0; // 仮定回数
+    let startTime = Date.now(); // ボタンをクリックした際の現在時刻(経過時間の表示に利用)
+
+    // 実行ボタン(btn_submit)をクリックしたときに、URL入力欄(txt_url)の値を利用してソルバーが実行されるようにしています。
+    // このメソッドは修正する必要はありません。
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('btn_submit').addEventListener('click', async function (event) {
+        cnt = 0;
+        startTime = Date.now();
+        await execute(document.getElementById('txt_url').value);
+      });
+    });
+
+    // ソルバーを実行します。
+    // このメソッドは修正する必要はありません。
+    let execute = async function (url) {
+      // パズルの種類に応じたソルバーを取得
+      let solver = getSolver(url);
+      if (solver == null) {
+        alert('URLが誤っているか、短縮URLであるか、対応していないパズルです！')
+        return;
+      }
+      // URLをソルバー用の盤面に変換する
+      let field = solver.convertField(url);
+      // いったん、盤面変換直後の状態を画面に表示する
+      await solver.updateDisplay(field, 50);
+      // 最大仮置き回数。最初は0とする
+      let maxDepth = 0;
+      // ソルバーが、その問題が解けたと判断するまで続行
+      while (!solver.isSolved(field)) {
+        // ソルバーに問題を解き進めてもらう
+        let solveResult = await solver.solve(field, maxDepth);
+        if (solveResult == -1) {
+          // solve()が-1()=矛盾あり)を返却したら、解なし
+          await solver.updateDisplay(field, 50);
+          alert('解なしです！')
+          return;
+        } else if (solveResult == 0) {
+          // solve()が0(=解き進められなかった)を返却したら、最大仮置き回数を1増やして継続
+          maxDepth++;
+        } else if (solveResult == 1) {
+          // solve()が1(=解き進められた)を返却したら、最大仮置き回数を0に戻して継続
+          maxDepth = 0;
+        }
+      }
+      await solver.updateDisplay(field, 50);
+      alert('解けました！')
+    }
+
+    // パズルの種類に応じたsolver(XXXSolver)を返却します。
+    // XXXSolverには必ず以下の4つの能力を持たせて(関数を実装して)ください。
+    //
+    // ・convertField (url)：URLの文字列から盤面情報を復元する能力
+    // ・solve (field, depth)：渡された盤面情報と仮置き回数に従い、パズルのルールに従って盤面情報を更新し、
+    //   　　　　　　　　　　　　盤面を解き進められた場合は1、解き進められなければ0、矛盾を発見したら-1を返却する能力
+    // ・isSolved(url)：渡された盤面情報を読み取って、問題が解けているかを判定する能力
+    // ・updateDisplay (url)：渡された盤面情報をブラウザに表示する能力
+    //
+    let getSolver = function (url) {
+      let params = url.split("/");
+      let puzzleType = params[params.length - 4];
+      if (puzzleType == 'p?mines') {
+        return new MinesSolver();
+      } else if (puzzleType == 'p?XXX') {
+        // 対応するパズルを増やしたい場合はここに追加
+        return new XXXSolver();
+      } else {
+        return null;
+      }
+    }
+
+    // マインスイーパ用のソルバー
+    class MinesSolver {
+
+      #ALPHABET_FROM_G = 'ghijklmnopqrstuvwxyz';
+
+      // URLをソルバー用の盤面に変換する。
+      // マインスイーパソルバーでは、1マスの情報を以下の数字で表す。
+      // -1:？マーク(爆弾を置かないことが確定している表出マス)
+      // 0-8：ヒント数字
+      // 10：まだ白マスか黒マスかが確定していないマス
+      // 11：白マス
+      // 12：黒マス
+      // ※URLのparamと盤面の対応関係はパズルによって異なるので試行錯誤して調べる必要があります。
+      convertField(url) {
+        let params = url.split("/");
+        let height = parseInt(params[params.length - 2]);
+        let width = parseInt(params[params.length - 3]);
+        let param = params[params.length - 1];
+        let wkField = [];
+        for (let oneChar of param) {
+          let interval = this.#ALPHABET_FROM_G.indexOf(oneChar);
+          if (interval != -1) {
+            for (let i = 0; i <= interval; i++) {
+              wkField.push(10);
+            }
+          } else if (oneChar == '.') {
+            wkField.push(-1);
+          } else {
+            wkField.push(parseInt(oneChar));
+          }
+        }
+        let field = [];
+        for (let i = 0; i < wkField.length; i += width) {
+          field.push(wkField.slice(i, i + width));
+        }
+        return field;
+      }
+
+      // 渡された盤面情報と仮置き回数に従って、問題を解き進め、結果をfieldに反映する。
+      // 問題を解き進められる箇所が見つかったら1を、見つからなかったら0を返却する。
+      // 盤面に矛盾を発見した場合、-1を返却する。
+      solve = async function (field, maxDepth) {
+        // 盤面を解き進めることができたかを保持
+        let advance = false;
+        // フィールドの全マスを走査する
+        for (let yIndex = 0; yIndex < field.length; yIndex++) {
+          for (let xIndex = 0; xIndex < field[0].length; xIndex++) {
+            // フィールドの10=まだ未確定のマスに対して解き進める処理をする
+            if (field[yIndex][xIndex] == 10) {
+              // 解き進める処理を行うたびに画面表示用の仮定回数を1増加する。
+              cnt++;
+              // 対象マスを11=白マスと仮定する。
+              let copyField = structuredClone(field);
+              copyField[yIndex][xIndex] = 11;
+              // 白マスと仮定した盤面をチェックして、NGであればそのマスに白マスは置けない=allowWhiteにfalseが入る。
+              let allowWhite = this.#check(copyField)
+              if (allowWhite && maxDepth >= 1) {
+                // 仮置き回数が1以上であれば、白マスと仮定した盤面を利用してsolve()を呼び出しなおす。
+                let depth = 0;
+                while (true) {
+                  let checkArrowWhite = await this.solve(copyField, depth);
+                  if (checkArrowWhite == -1) {
+                    // その結果、盤面に矛盾を発見した場合、そのマスに白マスは置けない=allowWhiteにfalseが入る。
+                    allowWhite = false;
+                    break;
+                  } else if (checkArrowWhite == 0) {
+                    depth++;
+                    // 呼び出しなおしたsolveに対して、仮置き回数が最大仮置き回数に到達した時点で仮置きチェック終了
+                    if (depth == maxDepth) {
+                      break;
+                    }
+                  } else if (checkArrowWhite == 1) {
+                    depth = 0;
+                  }
+                }
+              }
+              // 対象マスを12=黒マスと仮定する。
+              let copyField2 = structuredClone(field);
+              copyField2[yIndex][xIndex] = 12;
+              // 黒マスと仮定した盤面をチェックして、NGであればそのマスに黒マスは置けない=allowBlackにfalseが入る。
+              let allowBlack = this.#check(copyField2)
+              if (allowBlack && maxDepth >= 1) {
+                // 最大仮置き回数が1以上であれば、黒マスと仮定した盤面を利用してsolve()を呼び出しなおす。
+                let depth = 0;
+                while (true) {
+                  let checkArrowBlack = await this.solve(copyField2, depth);
+                  if (checkArrowBlack == -1) {
+                    // その結果、盤面に矛盾を発見した場合、そのマスに黒マスは置けない=allowBlackにfalseが入る。
+                    allowBlack = false;
+                    break;
+                  } else if (checkArrowBlack == 0) {
+                    depth++;
+                    // 呼び出しなおしたsolveに対して、仮置き回数が最大仮置き回数に到達した時点で仮置きチェック終了
+                    if (depth == maxDepth) {
+                      break;
+                    }
+                  } else if (checkArrowBlack == 1) {
+                    depth = 0;
+                  }
+                }
+              }
+              // 白マス・黒マスのいずれかが置けない場合、対象マスの確定が可能
+              if (!allowWhite || !allowBlack) {
+                if (allowWhite) {
+                  // 白マスは置けるが黒マスは置けない場合、対象マスを白マスに確定
+                  field[yIndex][xIndex] = 11;
+                } else if (allowBlack) {
+                  // 白マスは置けないが黒マスは置ける場合、対象マスを黒マスに確定
+                  field[yIndex][xIndex] = 12;
+                } else {
+                  // 白マスも黒マスも置けない場合、盤面に矛盾があるため、処理を中断して-1を返却する。
+                  return -1;
+                }
+                // 確定マスが発生したため「盤面を解き進めることができた」とする
+                advance = true;
+                // 確定マスが発生するたびに現在の盤面情報の表示を更新する。この処理は遅いので、途中経過表示が不要の場合はコメントアウトすること。
+                await this.updateDisplay(field, 0);
+              }
+            }
+          }
+        }
+        // 盤面を解き進めることができていれば1を、できていなければ0を返却する。
+        return advance ? 1 : 0;
+      }
+
+      // 盤面情報を渡して、問題が解けているかを判定する。
+      isSolved = function (field) {
+        // フィールドの全マスを走査する
+        for (let yIndex = 0; yIndex < field.length; yIndex++) {
+          for (let xIndex = 0; xIndex < field[0].length; xIndex++) {
+            // 1マスでも10=まだ未確定のマスがあれば、解けていない
+            if (field[yIndex][xIndex] == 10) {
+              return false;
+            }
+          }
+        }
+        // 10=未確定のマスがなければ、問題が解けている
+        return true;
+      }
+
+      #STRING_MAP = {
+        '-1': '？',
+        '0': '０',
+        '1': '１',
+        '2': '２',
+        '3': '３',
+        '4': '４',
+        '5': '５',
+        '6': '６',
+        '7': '７',
+        '8': '８',
+        '10': '＊',
+        '11': '・',
+        '12': '●',
+      }
+
+      // 盤面情報を渡して、表示領域を更新する。
+      // waitに遅延時間(ミリ秒)を渡すことで処理を遅らせることができる。大きめの値(100-500ぐらい)を渡すと途中経過の表示がなだらかになります。
+      updateDisplay = async function (field, wait) {
+        let str = '';
+        // フィールドの全マスを、STRING_MAPにしたがって数字から文字列に変換して連結していく
+        for (let yIndex = 0; yIndex < field.length; yIndex++) {
+          for (let xIndex = 0; xIndex < field[0].length; xIndex++) {
+            str += this.#STRING_MAP[field[yIndex][xIndex]];
+          }
+          str += '\n'
+        }
+        str += '\n'
+        // 仮定回数を表示する  
+        str += '仮定回数:' + cnt + '\n';
+        str += '経過時間:' + (Date.now() - startTime) + 'ms.\n';
+        // id=pre_result の領域に文字列を反映する
+        document.getElementById('pre_result').textContent = str;
+        await new Promise(resolve => setTimeout(resolve, wait));// 画面反映のための処理
+      }
+
+      // 盤面がルールに違反していないかをチェックする。ルールに違反している場合、falseを返す。
+      #check = function (field) {
+        if (!this.#numberCheck(field)) {
+          return false;
+        }
+        return true;
+      }
+
+      // 数字の周りの爆弾の個数をチェックし、ルールに違反している場合、falseを返す。
+      #numberCheck = function (field) {
+        // フィールドの全マスを走査する
+        for (let yIndex = 0; yIndex < field.length; yIndex++) {
+          for (let xIndex = 0; xIndex < field[0].length; xIndex++) {
+            // フィールドの0-8=ヒント数字があるマスに対してチェックをする
+            if (field[yIndex][xIndex] >= 0 && field[yIndex][xIndex] <= 8) {
+              // ヒント数字のある周囲8マスの12=黒マスと、10または12=黒になる可能性のあるマスを数え上げる
+              let fixBlack = 0;
+              let canBlack = 0;
+              if (yIndex != 0 && xIndex != 0) {
+                if (field[yIndex - 1][xIndex - 1] == 12) {
+                  fixBlack++;
+                  canBlack++;
+                } else if (field[yIndex - 1][xIndex - 1] == 10) {
+                  canBlack++;
+                }
+              }
+              if (yIndex != 0) {
+                if (field[yIndex - 1][xIndex] == 12) {
+                  fixBlack++;
+                  canBlack++;
+                } else if (field[yIndex - 1][xIndex] == 10) {
+                  canBlack++;
+                }
+              }
+              if (yIndex != 0 && xIndex != field[0].length - 1) {
+                if (field[yIndex - 1][xIndex + 1] == 12) {
+                  fixBlack++;
+                  canBlack++;
+                } else if (field[yIndex - 1][xIndex + 1] == 10) {
+                  canBlack++;
+                }
+              }
+              if (xIndex != field[0].length - 1) {
+                if (field[yIndex][xIndex + 1] == 12) {
+                  fixBlack++;
+                  canBlack++;
+                } else if (field[yIndex][xIndex + 1] == 10) {
+                  canBlack++;
+                }
+              }
+              if (yIndex != field.length - 1 && xIndex != field[0].length - 1) {
+                if (field[yIndex + 1][xIndex + 1] == 12) {
+                  fixBlack++;
+                  canBlack++;
+                } else if (field[yIndex + 1][xIndex + 1] == 10) {
+                  canBlack++;
+                }
+              }
+              if (yIndex != field.length - 1) {
+                if (field[yIndex + 1][xIndex] == 12) {
+                  fixBlack++;
+                  canBlack++;
+                } else if (field[yIndex + 1][xIndex] == 10) {
+                  canBlack++;
+                }
+              }
+              if (yIndex != field.length - 1 && xIndex != 0) {
+                if (field[yIndex + 1][xIndex - 1] == 12) {
+                  fixBlack++;
+                  canBlack++;
+                } else if (field[yIndex + 1][xIndex - 1] == 10) {
+                  canBlack++;
+                }
+              }
+              if (xIndex != 0) {
+                if (field[yIndex][xIndex - 1] == 12) {
+                  fixBlack++;
+                  canBlack++;
+                } else if (field[yIndex][xIndex - 1] == 10) {
+                  canBlack++;
+                }
+              }
+              if (fixBlack > field[yIndex][xIndex]) {
+                // 黒マス数がヒント数字よりも大きい場合、ルールに違反しているため、falseを返す
+                return false;
+              } else if (canBlack < field[yIndex][xIndex]) {
+                // 黒になる可能性のあるマス数がヒント数字よりも小さい場合、ルールに違反しているため、falseを返す
+                return false;
+              }
+            }
+          }
+        }
+        // 全てのマスでルール違反が発見されなかった場合、trueを返す
+        return true;
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div>
+    <input type="text" style="width:320px" id="txt_url">
+  </div>
+  <div>
+    <button type="button" id="btn_submit">実行</button>
+  </div>
+  <pre id="pre_result">
+</pre>
+
+</html>
