@@ -57,10 +57,10 @@
     // XXXSolverには必ず以下の4つの能力を持たせて(関数を実装して)ください。
     //
     // ・convertField (url)：URLの文字列から盤面情報を復元する能力
-    // ・solve (field, depth)：渡された盤面情報と仮置き回数に従い、パズルのルールに従って盤面情報を更新し、
+    // ・solve (field, maxDepth)：渡された盤面情報と最大仮置き回数に従い、パズルのルールに従って盤面情報を更新し、
     //   　　　　　　　　　　　　盤面を解き進められた場合は1、解き進められなければ0、矛盾を発見したら-1を返却する能力
-    // ・isSolved(url)：渡された盤面情報を読み取って、問題が解けているかを判定する能力
-    // ・updateDisplay (url)：渡された盤面情報をブラウザに表示する能力
+    // ・isSolved(field)：渡された盤面情報を読み取って、問題が解けているかを判定する能力
+    // ・updateDisplay (field)：渡された盤面情報をブラウザに表示する能力
     //
     let getSolver = function (url) {
       let params = url.split("/");
