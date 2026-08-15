@@ -53,114 +53,112 @@
     <link rel="canonical" href="http://www.example.com/">
     -->
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="material.min.css">
     <link rel="stylesheet" href="styles.css">
-    <style>
-    #view-source {
-      position: fixed;
-      display: block;
-      right: 0;
-      bottom: 0;
-      margin-right: 40px;
-      margin-bottom: 40px;
-      z-index: 900;
-    }
-    </style>
   </head>
   <body>
-    <div class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
-      <header class="demo-header mdl-layout__header mdl-layout__header--scroll mdl-color--grey-100 mdl-color-text--grey-800">
-        <div class="mdl-layout__header-row">
-          <span class="mdl-layout-title">3892myamya tools</span>
-          <div class="mdl-layout-spacer"></div>
+    <header class="site-header">
+      <a class="site-title" href="#top">3892myamya tools</a>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="about-title">
+        <div class="hero-decoration" aria-hidden="true"></div>
+        <h1 id="about-title">3892myamya tools</h1>
+        <p>
+          みゃーみゃ(<a href="https://twitter.com/3892myamya/" target="_blank" rel="noopener noreferrer">@3892myamya</a>)が作ったツールを紹介します。※画像は開発中のものである場合があります。
+        </p>
+      </section>
+
+      <section class="tools-section" aria-labelledby="tools-title">
+        <div class="section-heading">
+          <h2 id="tools-title">ツール紹介</h2>
         </div>
-      </header>
-      <div class="demo-ribbon"></div>
-      <main class="demo-main mdl-layout__content">
-        <div class="demo-container mdl-grid">
-          <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
-          <div class="demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">
-            <h3>このページについて</h3>
-              <p>
-                みゃーみゃ(<a href="https://twitter.com/3892myamya/" target="_blank">@3892myamya</a>)が作ったツールを紹介します。※画像は開発中のものである場合があります。
-              </p>
-            <h3>ツール紹介</h3>
-<!--
-              <h5>・<a href="https://myamyasdvx.herokuapp.com/" target="_blank">SDVX 課題曲ジェネレータ</h5><img src="sdvx.png"></a>
-              <p>
-                「<a href="https://nearnoah.net/" target="_blank">SDVX V スコアツール（β）</a>」のデータをもとに課題曲・武器曲等を表示してくれる非公式ツールです。「SDVX V スコアツール（β）」に登録があればどなたでもご利用いただけます。
-              </p>
-<br>
-              <h5>・<a href="https://myamyasdvx.herokuapp.com/chuni.html" target="_blank">CHUNITHM 課題曲ジェネレータ</h5><img src="chuni.png"></a>
-              <p>
-                「<a href="https://chuniviewer.net/" target="_blank">Chuniviewer チュウニズムスコアツール</a>」のデータをもとに課題曲・武器曲等を表示してくれる非公式ツールです。SDVX 課題曲ジェネレータと同等の機能を搭載しています。
-              </p>
-<br>
--->
-              <h5>・<a href="https://myamyasdvx.herokuapp.com/sudoku.html" target="_blank">ペンシルパズルガチャ</h5><img src="sudoku.png"></a>
-              <p>
-                自動生成されたペンシルパズルの問題がゲットできるガチャです。引いた問題はそのまま「<a href="http://pzv.jp/" target="_blank">ぱずぷれ v3</a>」さんで解いたり、Twitterでシェアすることが可能です。どんどんガチャを引いてパズルを楽しみましょう！
-              </p>
-<br>
-              <h5>・<a href="https://myamyasdvx.herokuapp.com/yajilin.html" target="_blank">ペンシルパズルソルバー</h5><img src="penpa.png"></a>
-              <p>
-                「ぱずぷれ v3」さんや「<a href="http://puzsq.sakura.ne.jp/main/index.php" target="_blank">パズルスクエア</a>」さんで公開されているペンシルパズルを解くことができるかもしれないツールです。数独、ヤジリン、へやわけ等、80種類以上のパズルに対応しています。
-              </p>
-<br>
-              <h5>・<a href="https://daily-x-math-front.onrender.com/" target="_blank">Daily X-Math</h5><img src="dailyxmath.png"></a>
-              <p>
-                1-9までの数字を入力して計算式を完成させるパズルゲームです。問題は日替わりで出題されます。
-              </p>
-<br>
-              <h5>・<a href="https://daily-x-math-front.onrender.com/maze" target="_blank">3D Maze Generator</h5><img src="3dmaze.png"></a>
-              <p>
-                サイズや階数を指定して立体迷路を自動生成し、遊ぶことができます。※当ツールはPCからの利用を推奨します
-              </p>
-<br>
-              <h5>・<a href="https://daily-x-math-front.onrender.com/shogi" target="_blank">Shogi Influence Map</h5><img src="shogi.png"></a>
-              <p>
-                将棋盤上の駒を自由に配置・移動し、駒の利きをヒートマップで確認できるツールです。棋譜の読み込み・出力や、将棋エンジンによる局面評価にも対応しています。
-              </p>
-<br>
-              <h5>・<a href="https://daily-x-math-front.onrender.com/illusion" target="_blank">Land Two-Color Dithering Tool</h5><img src="illusion.png"></a>
-              <p>
-                画像を白・黒と指定した1色のディザ画像に変換し、錯視効果を楽しめるツールです。画像はブラウザ上で処理され、変換結果は保存できます。
-              </p>
-<br>
-              <h5>・<a href="https://myamyasdvx.herokuapp.com/league.html" target="_blank">リーグ戦ジェネレータ</h5><img src="league.png"></a>
-              <p>
-                リーグ戦(総当たり戦)の組み合わせを生成できます。参加人数が奇数の場合の抜け番にも対応しています。
-              </p>
-<br>
-              <h5>・<a href="https://myamyasdvx.herokuapp.com/bunsu.html" target="_blank">近い分数</h5><img src="bunsu.png"></a>
-              <p>
-                入力した小数に近い分数を調査することできます。
-              </p>
-<br>
-              <h5>・<a href="https://myamyasdvx.herokuapp.com/sansu.html" target="_blank">算数練習</h5><img src="sansu.png"></a>
-              <p>
-                小学校低学年～中学年で習う四則演算の練習ができます。問題はランダムで出題され、ハイスコアも記録されるのでゲーム感覚で楽しく計算力を鍛えることができます。
-              </p>
-<br>
-            <h3>その他</h3>
-              <p>
-                ・各ツールのソースコードは<a href="https://github.com/3892myamya/sdvx" target="_blank">github</a>にてご覧いただけます。各コードはMITライセンスで再利用可能です。<br>
-                ・各ツールおよび当ページはリンクフリー・アンリンクフリーです。ツールへの直リンクも歓迎いたします。<br>
-                ・各ツールの利用によって生じたいかなる問題についても作者は責任を負わないものとします。また、各ツールについて以下に記載した先以外への問い合わせはご遠慮ください。<br>
-                ・各ツールに関して要望・お気づきの点・取材依頼等がございましたら、みゃーみゃ(<a href="https://twitter.com/3892myamya/" target="_blank">@3892myamya</a>)までご連絡ください。<br>
-              </p>
-          </div>
+
+        <div class="tool-grid">
+          <article class="tool-card">
+            <a class="tool-image" href="https://myamyasdvx.herokuapp.com/sudoku.html" target="_blank" rel="noopener noreferrer"><img src="sudoku.png" alt="ペンシルパズルガチャの画面" loading="lazy"></a>
+            <div class="tool-content">
+              <h3><a href="https://myamyasdvx.herokuapp.com/sudoku.html" target="_blank" rel="noopener noreferrer">ペンシルパズルガチャ</a></h3>
+              <p>自動生成されたペンシルパズルの問題がゲットできるガチャです。引いた問題はそのまま「<a href="http://pzv.jp/" target="_blank" rel="noopener noreferrer">ぱずぷれ v3</a>」さんで解いたり、Twitterでシェアすることが可能です。どんどんガチャを引いてパズルを楽しみましょう！</p>
+            </div>
+          </article>
+
+          <article class="tool-card">
+            <a class="tool-image" href="https://myamyasdvx.herokuapp.com/yajilin.html" target="_blank" rel="noopener noreferrer"><img src="penpa.png" alt="ペンシルパズルソルバーの画面" loading="lazy"></a>
+            <div class="tool-content">
+              <h3><a href="https://myamyasdvx.herokuapp.com/yajilin.html" target="_blank" rel="noopener noreferrer">ペンシルパズルソルバー</a></h3>
+              <p>「ぱずぷれ v3」さんや「<a href="http://puzsq.sakura.ne.jp/main/index.php" target="_blank" rel="noopener noreferrer">パズルスクエア</a>」さんで公開されているペンシルパズルを解くことができるかもしれないツールです。数独、ヤジリン、へやわけ等、80種類以上のパズルに対応しています。</p>
+            </div>
+          </article>
+
+          <article class="tool-card">
+            <a class="tool-image" href="https://daily-x-math-front.onrender.com/" target="_blank" rel="noopener noreferrer"><img src="dailyxmath.png" alt="Daily X-Mathの画面" loading="lazy"></a>
+            <div class="tool-content">
+              <h3><a href="https://daily-x-math-front.onrender.com/" target="_blank" rel="noopener noreferrer">Daily X-Math</a></h3>
+              <p>1-9までの数字を入力して計算式を完成させるパズルゲームです。問題は日替わりで出題されます。</p>
+            </div>
+          </article>
+
+          <article class="tool-card">
+            <a class="tool-image" href="https://daily-x-math-front.onrender.com/maze" target="_blank" rel="noopener noreferrer"><img src="3dmaze.png" alt="3D Maze Generatorの画面" loading="lazy"></a>
+            <div class="tool-content">
+              <h3><a href="https://daily-x-math-front.onrender.com/maze" target="_blank" rel="noopener noreferrer">3D Maze Generator</a></h3>
+              <p>サイズや階数を指定して立体迷路を自動生成し、遊ぶことができます。※当ツールはPCからの利用を推奨します</p>
+            </div>
+          </article>
+
+          <article class="tool-card">
+            <a class="tool-image" href="https://daily-x-math-front.onrender.com/shogi" target="_blank" rel="noopener noreferrer"><img src="shogi.png" alt="Shogi Influence Mapの画面" loading="lazy"></a>
+            <div class="tool-content">
+              <h3><a href="https://daily-x-math-front.onrender.com/shogi" target="_blank" rel="noopener noreferrer">Shogi Influence Map</a></h3>
+              <p>将棋盤上の駒を自由に配置・移動し、駒の利きをヒートマップで確認できるツールです。棋譜の読み込み・出力や、将棋エンジンによる局面評価にも対応しています。</p>
+            </div>
+          </article>
+
+          <article class="tool-card">
+            <a class="tool-image" href="https://daily-x-math-front.onrender.com/illusion" target="_blank" rel="noopener noreferrer"><img src="illusion.png" alt="Land Two-Color Dithering Toolの画面" loading="lazy"></a>
+            <div class="tool-content">
+              <h3><a href="https://daily-x-math-front.onrender.com/illusion" target="_blank" rel="noopener noreferrer">Land Two-Color Dithering Tool</a></h3>
+              <p>画像を白・黒と指定した1色のディザ画像に変換し、錯視効果を楽しめるツールです。画像はブラウザ上で処理され、変換結果は保存できます。</p>
+            </div>
+          </article>
+
+          <article class="tool-card">
+            <a class="tool-image" href="https://myamyasdvx.herokuapp.com/league.html" target="_blank" rel="noopener noreferrer"><img src="league.png" alt="リーグ戦ジェネレータの画面" loading="lazy"></a>
+            <div class="tool-content">
+              <h3><a href="https://myamyasdvx.herokuapp.com/league.html" target="_blank" rel="noopener noreferrer">リーグ戦ジェネレータ</a></h3>
+              <p>リーグ戦(総当たり戦)の組み合わせを生成できます。参加人数が奇数の場合の抜け番にも対応しています。</p>
+            </div>
+          </article>
+
+          <article class="tool-card">
+            <a class="tool-image" href="https://myamyasdvx.herokuapp.com/bunsu.html" target="_blank" rel="noopener noreferrer"><img src="bunsu.png" alt="近い分数の画面" loading="lazy"></a>
+            <div class="tool-content">
+              <h3><a href="https://myamyasdvx.herokuapp.com/bunsu.html" target="_blank" rel="noopener noreferrer">近い分数</a></h3>
+              <p>入力した小数に近い分数を調査することできます。</p>
+            </div>
+          </article>
+
+          <article class="tool-card">
+            <a class="tool-image" href="https://myamyasdvx.herokuapp.com/sansu.html" target="_blank" rel="noopener noreferrer"><img src="sansu.png" alt="算数練習の画面" loading="lazy"></a>
+            <div class="tool-content">
+              <h3><a href="https://myamyasdvx.herokuapp.com/sansu.html" target="_blank" rel="noopener noreferrer">算数練習</a></h3>
+              <p>小学校低学年～中学年で習う四則演算の練習ができます。問題はランダムで出題され、ハイスコアも記録されるのでゲーム感覚で楽しく計算力を鍛えることができます。</p>
+            </div>
+          </article>
         </div>
-        <footer class="demo-footer mdl-mini-footer">
-          <div class="mdl-mini-footer--left-section">
-            <ul class="mdl-mini-footer--link-list">
-            </ul>
-          </div>
-        </footer>
-      </main>
-    </div>
-    <script src="material.js"></script>
+      </section>
+
+      <section class="notes" aria-labelledby="notes-title">
+        <h2 id="notes-title">その他</h2>
+        <ul>
+          <li>各ツールのソースコードは<a href="https://github.com/3892myamya/sdvx" target="_blank" rel="noopener noreferrer">github</a>にてご覧いただけます。各コードはMITライセンスで再利用可能です。</li>
+          <li>各ツールおよび当ページはリンクフリー・アンリンクフリーです。ツールへの直リンクも歓迎いたします。</li>
+          <li>各ツールの利用によって生じたいかなる問題についても作者は責任を負わないものとします。また、各ツールについて以下に記載した先以外への問い合わせはご遠慮ください。</li>
+          <li>各ツールに関して要望・お気づきの点・取材依頼等がございましたら、みゃーみゃ(<a href="https://twitter.com/3892myamya/" target="_blank" rel="noopener noreferrer">@3892myamya</a>)までご連絡ください。</li>
+        </ul>
+      </section>
+    </main>
+
   </body>
 </html>
