@@ -8,6 +8,7 @@
   --accent-dark: #5044b4;
   --aqua: #8be7f2;
   --shadow: 0 20px 55px rgba(68, 75, 135, 0.12);
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   font-family: Inter, "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
   color: var(--ink);
   background: var(--canvas);
@@ -66,6 +67,23 @@ a:focus-visible {
   letter-spacing: 0.12em;
   text-decoration: none;
   text-transform: uppercase;
+}
+
+.site-nav {
+  margin-left: auto;
+  padding: 2px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+
+.site-nav:hover {
+  border-color: var(--ink);
+  color: var(--ink);
 }
 
 main {
@@ -183,12 +201,6 @@ main {
   transform: translateY(-4px);
 }
 
-.tool-card:first-child {
-  grid-column: span 2;
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
-}
-
 .tool-image {
   display: grid;
   min-height: 260px;
@@ -198,11 +210,6 @@ main {
   background:
     linear-gradient(135deg, rgba(176, 164, 255, 0.2), rgba(111, 218, 239, 0.16)),
     #f2f5ff;
-}
-
-.tool-card:first-child .tool-image {
-  border-right: 1px solid var(--line);
-  border-bottom: 0;
 }
 
 .tool-image img {
@@ -251,6 +258,138 @@ main {
 .tool-content p {
   margin: 0;
   color: var(--muted);
+}
+
+.classic {
+  margin-bottom: 88px;
+  padding: clamp(28px, 5vw, 56px);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background:
+    linear-gradient(rgba(57, 72, 118, 0.05) 1px, transparent 1px) 0 0 / 24px 24px,
+    linear-gradient(90deg, rgba(57, 72, 118, 0.05) 1px, transparent 1px) 0 0 / 24px 24px,
+    var(--surface);
+}
+
+.classic-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px 32px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.classic-heading h2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  margin: 0;
+  font-size: clamp(1.4rem, 2.6vw, 2.1rem);
+  letter-spacing: -0.04em;
+  line-height: 1.2;
+}
+
+.classic-tag {
+  padding: 1px 10px 2px;
+  border: 1.5px solid var(--ink);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.6em;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.classic-heading p {
+  max-width: 420px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.classic-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: classic;
+}
+
+.classic-item {
+  display: grid;
+  grid-template-columns: 2.4rem 168px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+  padding: 24px 0;
+  border-bottom: 1px dashed rgba(57, 72, 118, 0.28);
+  counter-increment: classic;
+}
+
+.classic-item:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.classic-item::before {
+  color: var(--muted);
+  content: counter(classic, decimal-leading-zero);
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 2;
+}
+
+.classic-thumb {
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.classic-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 300ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.classic-item:hover .classic-thumb img {
+  transform: scale(1.04);
+}
+
+.classic-item h3 {
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  line-height: 1.5;
+}
+
+.classic-item h3 a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.classic-item h3 a::after {
+  margin-left: 0.35em;
+  color: var(--muted);
+  content: "↗";
+  font-size: 0.8em;
+}
+
+.classic-item h3 a:hover {
+  text-decoration: underline;
+}
+
+.classic-item p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.75;
 }
 
 .notes {
@@ -336,14 +475,17 @@ main {
     grid-template-columns: 1fr;
   }
 
-  .tool-card:first-child {
-    grid-column: auto;
-    display: flex;
+  .classic {
+    margin-bottom: 64px;
   }
 
-  .tool-card:first-child .tool-image {
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
+  .classic-item {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .classic-item::before {
+    display: none;
   }
 
   .tool-image {
@@ -362,6 +504,7 @@ main {
 
   .tool-card,
   .tool-image img,
+  .classic-thumb img,
   .tool-content h3 a::after {
     transition: none;
   }
